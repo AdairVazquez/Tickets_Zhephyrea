@@ -6,13 +6,9 @@
                     <h1 class="dark:text-white text-black text-4xl font-bold">Chat del ticket #{{ $ticketId }}</h1>
                 </div>
 
-                <!-- Contenedor del chat (solo aquí habrá scroll) -->
                 <div id="chat-container" class="flex-1 overflow-y-auto p-6 bg-gray-200 dark:bg-gray-800 space-y-4">
                 </div>
 
-
-
-                <!-- Input del chat -->
                 <div class="p-4 flex bg-gray-900 border-t border-neutral-700">
                     <input id='mensaje' type="text" placeholder="Escribe un mensaje..."
                         class="w-full rounded-lg p-3 bg-gray-700 text-white focus:outline-none" />
@@ -21,168 +17,121 @@
             </div>
         </div>
     </div>
+
     @push('scripts')
-        <script type="module">
-            const ticketId = {{ $ticketId }}
-            const idUsuario = {{ $id_usuario }}
-            import {
-                initializeApp
-            } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-            import {
-                getDatabase,
-                ref,
-                push,
-                onChildAdded,
-                serverTimestamp,
-                query,
-                orderByChild,
-                equalTo
-            } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    <script type="module">
+        // 1. LOS IMPORTS SIEMPRE VAN PRIMERO
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import {
+            getDatabase,
+            ref,
+            push,
+            onChildAdded,
+            query,
+            orderByChild,
+            equalTo
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-            const firebaseConfig = {
+        // 2. CONFIGURACIÓN
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8ASypj2828Isg8pt-FmmdHsDFX1XxUgE",
+            authDomain: "tickets-sjs.firebaseapp.com",
+            databaseURL: "https://tickets-sjs-default-rtdb.firebaseio.com",
+            projectId: "tickets-sjs",
+            storageBucket: "tickets-sjs.firebasestorage.app",
+            messagingSenderId: "357550086903",
+            appId: "1:357550086903:web:fc4d9f2233ccf91daf11f2"
+        };
 
-                apiKey: "AIzaSyD8ASypj2828Isg8pt-FmmdHsDFX1XxUgE",
+        // 3. INICIALIZACIÓN (Después de los imports)
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-                authDomain: "tickets-sjs.firebaseapp.com",
+        // 4. VARIABLES DE ENTORNO (Blade a JS)
+        const ticketId = {{ $ticketId }};
+        const idUsuario = {{ $id_usuario }};
+        const nombre = '{{ $nombre_usuario }}';
+        const rol = '{{ $rol }}';
+        const concatenado = `${nombre} | ${rol}`;
+        const inicioChat = Date.now();
 
-                databaseURL: "https://tickets-sjs-default-rtdb.firebaseio.com",
+        // 5. REFERENCIAS DEL DOM
+        const mensajesDiv = document.getElementById('chat-container');
+        const mensajeInput = document.getElementById('mensaje');
+        const enviarBtn = document.getElementById('enviar');
 
-                projectId: "tickets-sjs",
+        // 6. LÓGICA DE FIREBASE
+        const chatRef = ref(db, 'chats/mensajes_globales');
+        const ticketQuery = query(chatRef, orderByChild('ticketId'), equalTo(ticketId));
 
-                storageBucket: "tickets-sjs.firebasestorage.app",
-
-                messagingSenderId: "357550086903",
-
-                appId: "1:357550086903:web:fc4d9f2233ccf91daf11f2"
-
-            };
-
-
-
-            const app = initializeApp(firebaseConfig);
-            const db = getDatabase(app);
-
-            const chatRef = ref(db, 'chats/mensajes_globales');
-            const ticketQuery = query(chatRef, orderByChild('ticketId'), equalTo(ticketId));
-
-
-
-            const rol = '{{ $rol }}'
-            const nombre = '{{ $nombre_usuario }}'
-            const concatenado = nombre + ' | ' + rol
-
-            const mensajesDiv = document.getElementById('chat-container');
-            const mensajeInput = document.getElementById('mensaje');
-            const enviarBtn = document.getElementById('enviar');
-            const inicioChat = Date.now();
-
-            const now = new Date();
-            const hora = now.getHours().toString().padStart(2, '0');
-            const minuto = now.getMinutes().toString().padStart(2, '0');
-            const horaFormateada = `${hora}:${minuto}`;
-
-
-            document.addEventListener("DOMContentLoaded", function() {
-                const chatContainer = document.getElementById("chat-container");
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            });
-
-            if ("Notification" in window) {
-                Notification.requestPermission().then(permission => {
-                    console.log("Permiso de notificaciones:", permission);
-                });
-            } else {
-                console.log("Este navegador no soporta notificaciones.");
+        // Solicitar permisos de notificación (solo si es necesario)
+        const solicitarPermisoNotificaciones = async () => {
+            if ("Notification" in window && Notification.permission === "default") {
+                await Notification.requestPermission();
             }
+        };
 
-            onChildAdded(ticketQuery, (data) => {
-                const msg = data.val();
-                const div = document.createElement('div');
+        // Escuchar nuevos mensajes
+        onChildAdded(ticketQuery, (data) => {
+            const msg = data.val();
+            const esMio = idUsuario == msg.emisor_id;
+            const div = document.createElement('div');
 
-                if (idUsuario != msg.emisor_id) {
-                    
-                    if (msg.timestamp > inicioChat) {
-                        div.innerHTML = `
-                            <div class="flex items-start">
-                                <div class="max-w-xs bg-gray-700 text-white p-3 rounded-2xl rounded-bl-none shadow">
-                                    <span class="block text-xs text-gray-200 text-right mt-1">${msg.datos}</span>
-                                    <p>${msg.mensaje}</p>
-                                    <span class="block text-xs text-gray-400 text-right mt-1">${msg.hora}</span>
-                                </div>
-                            </div>
-                        `;
-                        mostrarNotificacion('Nuevo mensaje', msg.mensaje);
-                    } else {
-                        div.innerHTML = `
-                            <div class="flex items-start">
-                                <div class="max-w-xs bg-gray-700 text-white p-3 rounded-2xl rounded-bl-none shadow">
-                                    <span class="block text-xs text-gray-200 text-right mt-1">${msg.datos}</span>
-                                    <p>${msg.mensaje}</p>
-                                    <span class="block text-xs text-gray-400 text-right mt-1">${msg.hora}</span>
-                                </div>
-                            </div>
-                        `;
-                    }
-                } else {
-                    div.innerHTML = `
-                    <div class="flex items-start justify-end">
-                        <div class="max-w-xs bg-blue-600 text-white p-3 rounded-2xl rounded-br-none shadow">
-                            <span class="block text-xs text-gray-200 text-right mt-1">${msg.datos}</span>
-                            <p>${msg.mensaje}</p>
-                            <span class="block text-xs text-gray-200 text-right mt-1">${msg.hora}</span>
-                        </div>
-                    </div>
-                `;
-                }
+            div.className = esMio ? "flex items-start justify-end" : "flex items-start";
+            div.innerHTML = `
+                <div class="max-w-xs ${esMio ? 'bg-blue-600 rounded-br-none' : 'bg-gray-700 rounded-bl-none'} text-white p-3 rounded-2xl shadow">
+                    <span class="block text-[10px] text-gray-300 font-bold mb-1">${msg.datos}</span>
+                    <p class="text-sm">${msg.mensaje}</p>
+                    <span class="block text-[10px] text-gray-400 text-right mt-1">${msg.hora}</span>
+                </div>
+            `;
 
-                mensajesDiv.appendChild(div);
-                mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
-            });
+            mensajesDiv.appendChild(div);
+            mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
 
-            function mostrarNotificacion(titulo, cuerpo) {
+            // Notificaciones para mensajes de otros
+            if (!esMio && msg.timestamp > inicioChat) {
                 if (Notification.permission === "granted") {
-                    new Notification(titulo, {
-                        body: cuerpo,
-
-                    });
+                    new Notification(`Ticket #${ticketId}`, { body: `${msg.datos}: ${msg.mensaje}` });
                 }
             }
+        });
 
-            enviarBtn.addEventListener('click', () => {
-                const mensaje = mensajeInput.value.trim();
-                if (mensaje === '') return;
-                push(chatRef, {
-                    emisor_id: {{ Auth::id() }},
-                    mensaje: mensajeInput.value,
-                    timestamp: Date.now(),
-                    hora: horaFormateada,
-                    datos: concatenado,
-                    ticketId: ticketId
-                });
+        // Función para enviar mensaje
+        const enviarMensaje = () => {
+    const mensaje = mensajeInput.value.trim();
+    if (mensaje === '') return;
 
-                mensajeInput.value = '';
-            });
+    const now = new Date();
+    const horaFormateada = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+    // AGREGAMOS MANEJO DE ERRORES AQUÍ
+    push(chatRef, {
+        emisor_id: idUsuario,
+        mensaje: mensaje,
+        timestamp: Date.now(),
+        hora: horaFormateada,
+        datos: concatenado,
+        ticketId: ticketId
+    })
+    .then(() => {
+        console.log("Mensaje enviado con éxito");
+        mensajeInput.value = '';
+    })
+    .catch((error) => {
+        console.error("Error detallado de Firebase:", error);
+        alert("No tienes permiso para escribir en la base de datos. Revisa las Reglas en la Consola.");
+    });
+};
 
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    const mensaje = mensajeInput.value.trim();
-                    if (mensaje === '') return;
-
-                    push(chatRef, {
-                        emisor_id: {{ Auth::id() }},
-                        mensaje: mensaje,
-                        timestamp: Date.now(),
-                        hora: horaFormateada,
-                        datos: concatenado,
-                        ticketId: ticketId
-                    });
-
-                    mensajeInput.value = '';
-                }
-            });
-        </script>
+        // Eventos
+        enviarBtn.addEventListener('click', enviarMensaje);
+        mensajeInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                enviarMensaje();
+            }
+        });
+    </script>
     @endpush
-
 </div>

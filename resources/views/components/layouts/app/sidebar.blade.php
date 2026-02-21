@@ -51,11 +51,16 @@
                         :current="request()->routeIs('soporte.dashboard')" wire:navigate>{{ __('Inicio') }}
                     </flux:navlist.item>
 
-                    <flux:navlist.item icon="users" :href="route('usuarios')"
-                        :current="request()->routeIs('usuarios')" wire:navigate>{{ __('Usuarios') }}</flux:navlist.item>
-
                     <flux:navlist.item icon="tickets" :href="route('tickets')" :current="request()->routeIs('tickets')"
-                        wire:navigate>{{ __('Tickets') }}</flux:navlist.item>
+                        wire:navigate>{{ __('Tickets') }}
+                    </flux:navlist.item>
+
+                    <flux:navlist.item icon="ticket-plus" :href="route('nuevoTicket')" :current="request()->routeIs('nuevoTicket')"
+                        wire:navigate>{{ __('Nuevo ticket') }}
+                    </flux:navlist.item>
+
+
+
                 </flux:navlist.group>
             </flux:navlist>
 

@@ -16,9 +16,13 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'email' => ['required', 'string', 'email'],
         ]);
 
-        Password::sendResetLink($this->only('email'));
+        // Esta línea ahora disparará automáticamente tu clase MiResetPassword
+        // gracias al cambio que hicimos en el modelo User.
+        $status = \Illuminate\Support\Facades\Password::sendResetLink(
+            $this->only('email')
+        );
 
-        session()->flash('status', __('A reset link will be sent if the account exists.'));
+        session()->flash('status', __($status));
     }
 }; ?>
 

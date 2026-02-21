@@ -8,15 +8,15 @@
             <div class="flex w-full max-w-sm flex-col gap-2">
                 <a href="{{ route('home') }}" class="flex flex-col items-center gap-2 font-medium" wire:navigate>
                     <span class="flex h-20 w-20 mb-1 items-center justify-center rounded-md">
-                        <img  src="{{ asset('img/logo_sjs.png') }}" alt="">
+                        <img src="{{ asset('img/logo1.png') }}" style="border-radius: 100%" alt="">
                     </span>
-                    <span class="sr-only">{{ config('app.name', 'Laravel') }}</span>
+                    <span class="sr-only">{{ config('app.name', 'Zephyrea Tickets') }}</span>
                 </a>
                 <div class="flex flex-col gap-6">
                     {{ $slot }}
                 </div>
             </div>
-        </div> 
+        </div>
         @fluxScripts
     </body>
 </html>

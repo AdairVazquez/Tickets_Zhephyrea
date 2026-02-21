@@ -107,7 +107,7 @@
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300">Rol</label>
                         <select id="rol" wire:model="rol_id"
                             class="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100">
-                            <option value="">Selecciona un rol</option>
+                            <option value="" disabled>Selecciona un rol</option>
                             @foreach ($roles as $rol)
                                 <option value="{{ $rol->id }}">{{ $rol->nombre_rol }}</option>
                             @endforeach
@@ -116,6 +116,38 @@
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
+
+                    <!-- Empresa -->
+                    <div>
+                        <label for="empresa" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Empresa
+                        </label>
+                        <select id="empresa" wire:model.live="empresa_id"
+                            class="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100">
+                            <option value="" disabled>Selecciona la empresa</option>
+                            @foreach ($empresas as $empresa)
+                                <option value="{{ $empresa->id }}">{{ $empresa->nombre_empresa }}</option>
+                            @endforeach
+                            <option value="otro" class="font-bold text-blue-600 italic">+ Otro (Crear nueva)</option>
+                        </select>
+                        @error('empresa_id')
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    @if($empresa_id === 'otro')
+                        <div class="mt-3 p-4 bg-blue-50 dark:bg-gray-800 border border-blue-200 dark:border-blue-900 rounded-lg">
+                            <label for="nueva_empresa" class="block text-sm font-medium text-blue-800 dark:text-blue-400">
+                                Nombre de la nueva empresa
+                            </label>
+                            <input type="text" id="nueva_empresa" wire:model="nueva_empresa"
+                                placeholder="Ej. Mi Nueva Empresa S.A."
+                                class="mt-1 block w-full px-4 py-2 border border-blue-300 dark:border-gray-700 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100">
+                            @error('nueva_empresa')
+                                <span class="text-red-600 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @endif
 
                     <!-- Contraseña -->
                     <div>
@@ -140,7 +172,7 @@
 
                     <!-- Botones -->
                     <div class="flex justify-end gap-3 mt-6">
-                        <button type="button"
+                        <button type="button" wire:click="cerrarCrear"
                             class="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-100 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600">
                             Cancelar
                         </button>

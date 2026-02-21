@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\Empresa;
 use App\Models\Rol;
 use App\Models\User;
 use Livewire\Component;
@@ -9,7 +10,7 @@ use Livewire\WithPagination;
 
 class Usuarios extends Component
 {
-    use WithPagination; 
+    use WithPagination;
 
     protected $paginationTheme = 'tailwind'; // Opcional: para estilos Tailwind
 
@@ -18,7 +19,7 @@ class Usuarios extends Component
 
     public $roles;
     public $postIdDel;
-    public $name, $email, $password, $password_confirmation, $rol_id; 
+    public $name, $email, $password, $password_confirmation, $rol_id, $empresa_id = '', $empresas, $nueva_empresa;
 
     public $UserEditId = '';
     Public $user_edit = [
@@ -32,6 +33,7 @@ class Usuarios extends Component
 
     public function mount(){
         $this->roles = Rol::all();
+        $this->empresas = Empresa::all();
     }
 
     public function mostrarCrear(){
@@ -48,27 +50,43 @@ class Usuarios extends Component
 
     public function save()
     {
-        $this->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'password' => 'required|string|min:8|confirmed',
-            'rol_id' => 'required|exists:rol,id'
-        ],[
-            'name.required'=> 'Campo olbigatorio, escribe un nombre'
+        // Definimos las reglas base
+        $rules = [
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'rol_id'   => 'required|exists:rol,id',
+            'password' => 'required|confirmed|min:8',
+        ];
+
+        // Lógica condicional para la Empresa
+        if ($this->empresa_id === 'otro') {
+            // Si es "otro", validamos el campo de texto y NO el ID en la BD
+            $rules['nueva_empresa'] = 'required|min:3|unique:empresas,nombre_empresa';
+        } else {
+            // Si no es "otro", validamos que el ID exista en la tabla empresas
+            $rules['empresa_id'] = 'required|exists:empresas,id';
+        }
+
+        $this->validate($rules);
+
+        // --- PROCESAMIENTO ---
+
+        $final_empresa_id = $this->empresa_id;
+
+        if ($this->empresa_id === 'otro') {
+            $nueva = Empresa::create(['nombre_empresa' => $this->nueva_empresa]);
+            $final_empresa_id = $nueva->id;
+        }
+
+        User::create([
+            'name'       => $this->name,
+            'email'      => $this->email,
+            'password'   => bcrypt($this->password),
+            'rol_id'     => $this->rol_id,
+            'id_empresa' => $final_empresa_id, // Usamos el ID final
         ]);
 
-
-        User::create(
-            $this->only('name','email','password','rol_id')
-        );
-
-        $this->reset(['name', 'email' , 'password', 'rol_id']);
-        $this->openCrear = false;
-        $this->gotoPage(1);
-        
-        $this->dispatch('usuarioCreado');
-
-        
+        $this->cerrarCrear();
     }
 
     public function edit($user_id){
@@ -82,6 +100,7 @@ class Usuarios extends Component
         $this->user_edit['email']=$usuario->email;
         $this->user_edit['password']=$usuario->password;
         $this->user_edit['rol_id']=$usuario->rol_id;
+        $this->user_edit['empresa_id']=$usuario->empresa_id;
 
     }
 
@@ -90,13 +109,14 @@ class Usuarios extends Component
         $usuario->update([
          'name' => $this -> user_edit['name'],
          'email' => $this->user_edit['email'],
-         'rol_id' => $this->user_edit['rol_id']
+         'rol_id' => $this->user_edit['rol_id'],
+         'empresa_id' => $this->user_edit['empresa_id']
         ]);
 
-        $this->reset(['name','email','rol_id']);
+        $this->reset(['name','email','rol_id','empresa_id']);
         $this->openEdit = false;
         $this->gotoPage(1);
-        
+
         $this->dispatch('usuarioActualizado');
     }
 
@@ -123,4 +143,3 @@ class Usuarios extends Component
         ]);
     }
 }
- 

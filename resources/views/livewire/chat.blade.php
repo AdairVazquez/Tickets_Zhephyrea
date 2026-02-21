@@ -1,18 +1,43 @@
 <div>
-    <div class="h-screen flex flex-col">
-        <div class="flex-1 relative overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-            <div class="h-full flex flex-col rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <div class="p-1">
-                    <h1 class="dark:text-white text-black text-4xl font-bold">Chat del ticket #{{ $ticketId }}</h1>
+    <header>
+        <style>
+        /* Forzamos a que el cuerpo de la página no tenga scroll bajo ninguna circunstancia */
+        html, body {
+            height: 100vh;
+            overflow: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            margin-bottom: 100px !important;
+        }
+
+        /* Opcional: Haz que el scroll interno sea más estético (delgado) */
+        #chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-container::-webkit-scrollbar-thumb {
+            background-color: #4b5563; /* color gray-600 */
+            border-radius: 10px;
+        }
+    </style>
+    </header>
+    <div class="h-[calc(100vh-70px)] flex flex-col overflow-hidden bg-white dark:bg-neutral-900">
+        <div class="flex-1 flex flex-col min-h-0">
+
+            <div class="flex flex-col h-full border-b border-neutral-200 dark:border-neutral-700 bg-gray-200 dark:bg-gray-800">
+
+                <div class="p-4 bg-white dark:bg-neutral-900 border-b dark:border-neutral-700">
+                    <h1 class="dark:text-white text-black text-2xl font-bold">Chat del ticket #{{ $ticketId }}</h1>
                 </div>
 
-                <div id="chat-container" class="flex-1 overflow-y-auto p-6 bg-gray-200 dark:bg-gray-800 space-y-4">
-                </div>
+                <div id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-4">
+                    </div>
 
-                <div class="p-4 flex bg-gray-900 border-t border-neutral-700">
-                    <input id='mensaje' type="text" placeholder="Escribe un mensaje..."
-                        class="w-full rounded-lg p-3 bg-gray-700 text-white focus:outline-none" />
-                    <button id="enviar" class="ml-3">@include('flux.icon.send-horizontal')</button>
+                <div class="pt-4 px-4 pb-8 bg-gray-900 border-t border-neutral-700">
+                    <div class="flex items-center">
+                        <input id='mensaje' type="text" placeholder="Escribe un mensaje..."
+                            class="w-full rounded-lg p-3 bg-gray-700 text-white focus:outline-none" />
+                        <button id="enviar" class="ml-3 text-white">@include('flux.icon.send-horizontal')</button>
+                    </div>
                 </div>
             </div>
         </div>

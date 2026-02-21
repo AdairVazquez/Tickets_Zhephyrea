@@ -6,9 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+
+Route::redirect('/', '/login');
 
 Route::get('/chat', function () {
     return view('cliente.chat');
@@ -39,6 +38,12 @@ Route::get('/detalleTicket/{ticketId}', DetalleTicket::class)
 Route::get('/chatTicket/{ticketId}', Chat::class)
     ->middleware(['auth', 'verified'])
     ->name('chat');
+
+
+//RUTAS SOPORTE
+Route::view('dashboardSoporte', 'soporte.dashboard')
+    ->middleware(['auth', 'verified'])
+    ->name('soporte.dashboard');
 
 
 

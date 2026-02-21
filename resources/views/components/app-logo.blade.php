@@ -1,6 +1,6 @@
 <div class="flex aspect-square size-8 items-center justify-center rounded-md bg-accent-content text-accent-foreground">
-    <img src="{{ asset('img/logo_sjs_fondo.jpeg') }}" alt="">
+    <img src="{{ asset('img/logo1.png') }}" alt="" style="border-radius: 120%">
 </div>
 <div class="ms-1 grid flex-1 text-start text-sm">
-    <span class="mb-0.5 truncate leading-tight font-semibold">Tickets SJS</span>
+    <span class="mb-0.5 truncate leading-tight font-semibold">Zephyrea Tickets</span>
 </div>

@@ -14,7 +14,7 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
-    /** 
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'rol_id',
+        'empresa_id',
         'password',
     ];
 
@@ -61,9 +62,19 @@ class User extends Authenticatable
             ->implode('');
     }
 
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\MiResetPassword($token));
+    }
+
     // Se define la relacion de las tablas
     public function rol()
     {
         return $this->belongsTo(Rol::class, 'rol_id');
+    }
+
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 }

@@ -104,7 +104,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Smart Jar Solution')" :description="__('Ingresa tus credenciales para acceder al sistema.')" />
+    <x-auth-header :title="__('Zephyrea Tickets')" :description="__('Ingresa tus credenciales para acceder al sistema.')" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />

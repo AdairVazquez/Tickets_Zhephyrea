@@ -8,6 +8,8 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+use function Termwind\render;
+
 class Usuarios extends Component
 {
     use WithPagination;
@@ -109,13 +111,15 @@ class Usuarios extends Component
         $usuario->update([
          'name' => $this -> user_edit['name'],
          'email' => $this->user_edit['email'],
-         'rol_id' => $this->user_edit['rol_id'],
+         'rol_id' => $this->user_edit['id_rol'],
          'empresa_id' => $this->user_edit['empresa_id']
         ]);
 
         $this->reset(['name','email','rol_id','empresa_id']);
         $this->openEdit = false;
         $this->gotoPage(1);
+
+
 
         $this->dispatch('usuarioActualizado');
     }
@@ -139,7 +143,10 @@ class Usuarios extends Component
     public function render()
     {
         return view('livewire.admin.usuarios', [
-            'usuarios' => User::with('rol')->orderBy('id_rol', 'desc')->paginate(20),
+            // Cargamos todo aquí para que siempre esté disponible y actualizado
+            'usuarios' => User::with(['rol', 'empresa'])->orderBy('id', 'desc')->paginate(20),
+            'roles'    => Rol::all(),
+            'empresas' => Empresa::all(),
         ]);
     }
 }

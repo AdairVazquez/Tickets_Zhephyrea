@@ -2,7 +2,6 @@
     <flux:main>
         {{ $slot }}
         @livewireScripts
-        
         @stack('scripts')
     </flux:main>
 </x-layouts.app.sidebar>

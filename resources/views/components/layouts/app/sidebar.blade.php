@@ -33,10 +33,10 @@
                 <flux:navlist.item icon="ticket-plus" :href="route('nuevoTicket')" :current="request()->routeIs('nuevoTicket')"
                     wire:navigate>{{ __('Nuevo ticket') }}</flux:navlist.item>
 
-                <flux:navlist.item icon="ticket-plus" :href="route('imagenes')" :current="request()->routeIs('imagenes')"
+                <flux:navlist.item icon="image" :href="route('imagenes')" :current="request()->routeIs('imagenes')"
                     wire:navigate>{{ __('Imagenes') }}</flux:navlist.item>
 
-                <flux:navlist.item icon="ticket-plus" :href="route('nuevaImagen')" :current="request()->routeIs('nuevaImagen')"
+                <flux:navlist.item icon="image-plus" :href="route('nuevaImagen')" :current="request()->routeIs('nuevaImagen')"
                     wire:navigate>{{ __('Nueva imagen') }}</flux:navlist.item>
 
 

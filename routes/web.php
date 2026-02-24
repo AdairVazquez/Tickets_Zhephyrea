@@ -23,6 +23,8 @@ Route::view('usuarios', 'admin.usuarios')
     ->middleware(['auth', 'verified', 'rol.admin'])
     ->name('usuarios');
 
+//RUTAS DE TICKETS
+
 Route::view('tickets', 'admin.tickets')
     ->middleware(['auth', 'verified'])
     ->name('tickets');
@@ -39,6 +41,15 @@ Route::get('/chatTicket/{ticketId}', Chat::class)
     ->middleware(['auth', 'verified'])
     ->name('chat');
 
+// RUTAS DE IMAGENES
+
+Route::view('imagenes', 'admin.imagenes')
+    ->middleware(['auth', 'verified'])
+    ->name('imagenes');
+
+Route::view('nuevaImagen', 'cliente.nuevaImagen')
+    ->middleware(['auth', 'verified'])
+    ->name('nuevaImagen');
 
 //RUTAS SOPORTE
 Route::view('dashboardSoporte', 'soporte.dashboard')

@@ -14,62 +14,68 @@
             <x-app-logo />
         </a>
         @php
-            $rol_id = auth()->user()->rol_id;
+        $rol_id = auth()->user()->rol_id;
         @endphp
         @if ($rol_id == 1)
         {{-- sidebar admin --}}
-            <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Rutas')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('admin.dashboard')"
-                        :current="request()->routeIs('admin.dashboard')" wire:navigate>{{ __('Inicio') }}
-                    </flux:navlist.item>
-
-                    <flux:navlist.item icon="users" :href="route('usuarios')"
-                        :current="request()->routeIs('usuarios')" wire:navigate>{{ __('Usuarios') }}</flux:navlist.item>
-
-                    <flux:navlist.item icon="tickets" :href="route('tickets')" :current="request()->routeIs('tickets')"
-                        wire:navigate>{{ __('Tickets') }}</flux:navlist.item>
-
-                    <flux:navlist.item icon="ticket-plus" :href="route('nuevoTicket')" :current="request()->routeIs('nuevoTicket')"
-                        wire:navigate>{{ __('Nuevo ticket') }}</flux:navlist.item>
-
-
-                </flux:navlist.group>
-            </flux:navlist>
-
-            <flux:spacer />
-
-            <flux:navlist variant="outline">
-                <flux:navlist.item icon="bug" :href="route('admin.dashboard')" wire:navigate>{{ __('Log Errores') }}
+        <flux:navlist variant="outline">
+            <flux:navlist.group :heading="__('Rutas')" class="grid">
+                <flux:navlist.item icon="home" :href="route('admin.dashboard')"
+                    :current="request()->routeIs('admin.dashboard')" wire:navigate>{{ __('Inicio') }}
                 </flux:navlist.item>
-            </flux:navlist>
+
+                <flux:navlist.item icon="users" :href="route('usuarios')"
+                    :current="request()->routeIs('usuarios')" wire:navigate>{{ __('Usuarios') }}</flux:navlist.item>
+
+                <flux:navlist.item icon="tickets" :href="route('tickets')" :current="request()->routeIs('tickets')"
+                    wire:navigate>{{ __('Tickets') }}</flux:navlist.item>
+
+                <flux:navlist.item icon="ticket-plus" :href="route('nuevoTicket')" :current="request()->routeIs('nuevoTicket')"
+                    wire:navigate>{{ __('Nuevo ticket') }}</flux:navlist.item>
+
+                <flux:navlist.item icon="ticket-plus" :href="route('imagenes')" :current="request()->routeIs('imagenes')"
+                    wire:navigate>{{ __('Imagenes') }}</flux:navlist.item>
+
+                <flux:navlist.item icon="ticket-plus" :href="route('nuevaImagen')" :current="request()->routeIs('nuevaImagen')"
+                    wire:navigate>{{ __('Nueva imagen') }}</flux:navlist.item>
+
+
+            </flux:navlist.group>
+        </flux:navlist>
+
+        <flux:spacer />
+
+        <flux:navlist variant="outline">
+            <flux:navlist.item icon="bug" :href="route('admin.dashboard')" wire:navigate>{{ __('Log Errores') }}
+            </flux:navlist.item>
+        </flux:navlist>
         @elseif ($rol_id == 2)
         {{-- sidebar soporte --}}
-            <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Rutas')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('soporte.dashboard')"
-                        :current="request()->routeIs('soporte.dashboard')" wire:navigate>{{ __('Inicio') }}
-                    </flux:navlist.item>
-
-                    <flux:navlist.item icon="tickets" :href="route('tickets')" :current="request()->routeIs('tickets')"
-                        wire:navigate>{{ __('Tickets') }}
-                    </flux:navlist.item>
-
-                    <flux:navlist.item icon="ticket-plus" :href="route('nuevoTicket')" :current="request()->routeIs('nuevoTicket')"
-                        wire:navigate>{{ __('Nuevo ticket') }}
-                    </flux:navlist.item>
-
-
-
-                </flux:navlist.group>
-            </flux:navlist>
-
-            <flux:spacer />
-
-            <flux:navlist variant="outline">
-                <flux:navlist.item icon="bug" :href="route('admin.dashboard')" wire:navigate>{{ __('Log Errores') }}
+        <flux:navlist variant="outline">
+            <flux:navlist.group :heading="__('Rutas')" class="grid">
+                <flux:navlist.item icon="home" :href="route('soporte.dashboard')"
+                    :current="request()->routeIs('soporte.dashboard')" wire:navigate>{{ __('Inicio') }}
                 </flux:navlist.item>
-            </flux:navlist>
+
+                <flux:navlist.item icon="tickets" :href="route('tickets')" :current="request()->routeIs('tickets')"
+                    wire:navigate>{{ __('Tickets') }}
+                </flux:navlist.item>
+
+                <flux:navlist.item icon="ticket-plus" :href="route('nuevoTicket')" :current="request()->routeIs('nuevoTicket')"
+                    wire:navigate>{{ __('Nuevo ticket') }}
+                </flux:navlist.item>
+
+
+
+            </flux:navlist.group>
+        </flux:navlist>
+
+        <flux:spacer />
+
+        <flux:navlist variant="outline">
+            <flux:navlist.item icon="bug" :href="route('admin.dashboard')" wire:navigate>{{ __('Log Errores') }}
+            </flux:navlist.item>
+        </flux:navlist>
         @endif
 
 

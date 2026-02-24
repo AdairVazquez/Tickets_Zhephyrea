@@ -17,8 +17,9 @@ class DetalleTicket extends Component
     public function regresar(){
         if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 2){
             return redirect()->route('tickets');
+        }else{
+            return redirect()->route('MisTickets');
         }
-        
     }
 
     public function confirmCerrar($id)
@@ -35,7 +36,7 @@ class DetalleTicket extends Component
             'id_estado' => 3,
             ]);
         }
-        
+
         $this->dispatch('ticketCerrado');
     }
 
@@ -50,7 +51,7 @@ class DetalleTicket extends Component
         ->findOrFail($ticketId);
         $this->ticketC = Ticket::find($ticketId);
         $this->archivoC = $this->ticketC->archivo->ruta ?? '';
-    } 
+    }
 
     public function render()
     {

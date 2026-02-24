@@ -9,7 +9,7 @@
     <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-        <a href="{{ route('admin.dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse"
+        <a href="" class="me-5 flex items-center space-x-2 rtl:space-x-reverse"
             wire:navigate>
             <x-app-logo />
         </a>
@@ -58,18 +58,28 @@
                     <flux:navlist.item icon="ticket-plus" :href="route('nuevoTicket')" :current="request()->routeIs('nuevoTicket')"
                         wire:navigate>{{ __('Nuevo ticket') }}
                     </flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
+        @elseif ($rol_id == 3)
+            <flux:navlist variant="outline">
+                <flux:navlist.group :heading="__('Rutas')" class="grid">
+                    <flux:navlist.item icon="home" :href="route('cliente.dashboard')"
+                        :current="request()->routeIs('cliente.dashboard')" wire:navigate>{{ __('Inicio') }}
+                    </flux:navlist.item>
 
+                    <flux:navlist.item icon="tickets" :href="route('MisTickets')" :current="request()->routeIs('MisTickets')"
+                        wire:navigate>{{ __('Mis Tickets') }}
+                    </flux:navlist.item>
 
-
+                    <flux:navlist.item icon="ticket-plus" :href="route('nuevoTicket')" :current="request()->routeIs('nuevoTicket')"
+                        wire:navigate>{{ __('Nuevo ticket') }}
+                    </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
 
-            <flux:navlist variant="outline">
-                <flux:navlist.item icon="bug" :href="route('admin.dashboard')" wire:navigate>{{ __('Log Errores') }}
-                </flux:navlist.item>
-            </flux:navlist>
+
         @endif
 
 

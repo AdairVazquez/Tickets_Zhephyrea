@@ -1,4 +1,4 @@
-<div>
+﻿<div>
     <div class="flex flex-col gap-4 w-full h-screen overflow-hidden rounded-xl">
         <div class="relative flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
 
@@ -31,7 +31,6 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                                     Fecha de subida
                                 </th>
-                                </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                                     Archivo
                                 </th>
@@ -63,7 +62,7 @@
                                     {{ $imagen->fecha_subida }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <a href="{{asset('storage/'.$imagen->ruta_archivo)}}" target="_blank">Ver imagen</a>
+                                    <a href="{{ asset('storage/'.$imagen->ruta_archivo) }}" target="_blank">Ver imagen</a>
                                 </td>
                                 <td class="px-6 py-4">
                                     <button type="button" wire:click="editarImagen({{ $imagen->id }})"
@@ -85,6 +84,7 @@
             </div>
         </div>
     </div>
+
     @if ($mostrarFormulario)
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
         <div class="w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-xl bg-white dark:bg-zinc-900 border border-neutral-200 dark:border-neutral-700 shadow-2xl">
@@ -101,46 +101,49 @@
         </div>
     </div>
     @endif
-    @livewireScripts
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        Livewire.on('show-delete-confirmation', () => {
-            Swal.fire({
-                title: "¿Estás seguro?",
-                text: "Esta acción no se puede revertir",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, elimínalo!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Livewire.dispatch('deletePost');
-                }
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('show-delete-confirmation', () => {
+                Swal.fire({
+                    title: "¿Estás seguro?",
+                    text: "Esta acción no se puede revertir",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Sí, elimínalo!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Livewire.dispatch('deletePost');
+                    }
+                });
             });
-        });
 
-        Livewire.on('imagenEliminada', () => {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Imagen eliminada',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
+            Livewire.on('imagenEliminada', () => {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Imagen eliminada',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
             });
-        });
 
-        Livewire.on('imagenEliminadaError', () => {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
-                title: 'No se pudo eliminar la imagen',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
+            Livewire.on('imagenEliminadaError', () => {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'No se pudo eliminar la imagen',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
             });
         });
     </script>
+</div>

@@ -35,6 +35,7 @@ class NuevaImagen extends Component
             'ruta_archivo' => $ruta,
             'tipo' => $this->ruta_archivo->getMimeType(),
             'fecha_subida' => $this->fecha_subida,
+            'estado' => 'activo',
         ]);
 
         $this->reset(['nombre', 'descripcion', 'ruta_archivo']);

@@ -2,16 +2,39 @@
 
 use App\Livewire\Chat;
 use App\Livewire\Soporte\DetalleTicket;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
 
-Route::redirect('/', '/login');
+Route::get('/preview-mail', function () {
+    // Simulamos un ticket para la prueb
+
+    // Retornamos la vista del correo pasando los datos
+    return view('email.nuevoTicket');
+});
+
+
+Route::get('/send-test-mail', function () {
+    $data = [];
+    try {
+
+        Mail::send('email.nuevoTicket', $data ,function($message) {
+            $message->to('chrisaban08@gmail.com')
+                    ->subject('Prueba de Diseño Zephyrea');
+        });
+        return "Correo enviado con éxito. Revisa tu bandeja de entrada.";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+});
+
+Route::redirect('/', '/login')->name('home');
 
 Route::get('/chat', function () {
     return view('cliente.chat');
-})->name('home');
+})->name('chat');
 
 
 // RUTAS ADMIN

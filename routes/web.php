@@ -56,6 +56,16 @@ Route::view('dashboardSoporte', 'soporte.dashboard')
     ->middleware(['auth', 'verified'])
     ->name('soporte.dashboard');
 
+//RUTAS CLIENTE
+
+Route::view('MisTickets', 'cliente.misTickets')
+    ->middleware(['auth', 'verified'])
+    ->name('MisTickets');
+
+Route::view('dashboardCliente', 'cliente.dashboard')
+    ->middleware(['auth', 'verified'])
+    ->name('cliente.dashboard');
+
 
 
 Route::middleware(['auth'])->group(function () {

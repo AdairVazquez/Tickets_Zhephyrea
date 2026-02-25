@@ -70,9 +70,13 @@ Route::view('imagenes', 'admin.imagenes')
     ->middleware(['auth', 'verified'])
     ->name('imagenes');
 
-Route::view('nuevaImagen', 'cliente.nuevaImagen')
+Route::view('crearOEditarImagen', 'cliente.crearOEditarImagen')
     ->middleware(['auth', 'verified'])
-    ->name('nuevaImagen');
+    ->name('crearOEditarImagen');
+
+Route::view('/imagenes/{id}/editar', 'cliente.crearOEditarImagen')
+    ->middleware(['auth', 'verified'])
+    ->name('imagenes.edit');
 
 //RUTAS SOPORTE
 Route::view('dashboardSoporte', 'soporte.dashboard')

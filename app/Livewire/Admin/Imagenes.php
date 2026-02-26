@@ -1,14 +1,16 @@
 <?php
 
 namespace App\Livewire\Admin;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Imagen;
-use App\Models\User;
-use Livewire\Attributes\On;
+
 use Livewire\Component;
+use Livewire\WithPagination;
+use App\Models\Imagen;
+use Livewire\Attributes\On;
 
 class Imagenes extends Component
 {
+    use WithPagination;
+
     public $mostrarFormulario = false;
     public $modoFormulario = 'crear';
     public $imagenSeleccionadaId = null;
@@ -21,7 +23,8 @@ class Imagenes extends Component
         $this->mostrarFormulario = true;
         $this->modoFormulario = 'crear';
         $this->imagenSeleccionadaId = null;
-        $this->dispatch('crearImagen');
+
+        $this->dispatch('crearImagen')->to(\App\Livewire\Cliente\CrearOEditarImagen::class);
     }
 
     public function editarImagen($id)
@@ -29,7 +32,8 @@ class Imagenes extends Component
         $this->mostrarFormulario = true;
         $this->modoFormulario = 'editar';
         $this->imagenSeleccionadaId = $id;
-        $this->dispatch('editarImagen', id: $id);
+
+        $this->dispatch('editarImagen', id: $id)->to(\App\Livewire\Cliente\CrearOEditarImagen::class);
     }
 
     public function confirmDelete($id)
@@ -40,19 +44,13 @@ class Imagenes extends Component
 
     public function deletePost()
     {
-        $imagen = Imagen::find($this->postIdDel);
-
-        if (!$imagen) {
+        if (empty($this->postIdDel)) {
             $this->dispatch('imagenEliminadaError');
             return;
         }
 
-        if (!empty($imagen->ruta_archivo) && Storage::disk('public')->exists($imagen->ruta_archivo)) {
-            Storage::disk('public')->delete($imagen->ruta_archivo);
-        }
-
-        $imagen->delete();
-        $this->dispatch('imagenEliminada');
+        $this->dispatch('eliminarImagen', id: $this->postIdDel)->to(\App\Livewire\Cliente\CrearOEditarImagen::class);
+        $this->postIdDel = null;
     }
 
     public function cerrarFormularioImagen()
@@ -60,6 +58,8 @@ class Imagenes extends Component
         $this->mostrarFormulario = false;
         $this->modoFormulario = 'crear';
         $this->imagenSeleccionadaId = null;
+
+        $this->dispatch('crearImagen')->to(\App\Livewire\Cliente\CrearOEditarImagen::class);
     }
 
     #[On('imagenGuardada')]

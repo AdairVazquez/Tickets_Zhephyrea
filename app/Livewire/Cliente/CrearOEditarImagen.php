@@ -16,6 +16,11 @@ class CrearOEditarImagen extends Component
     public $imagen_antigua, $imagen_id;
     public $modo = 'crear';
 
+    public function mount()
+    {
+        $this->limpiarCampos();
+    }
+
     public function save()
     {
         if (!empty($this->imagen_id)) {
@@ -41,19 +46,18 @@ class CrearOEditarImagen extends Component
 
         $this->fecha_subida = now();
         $ruta = $this->ruta_archivo->store('imagenes', 'public');
- 
+
         Imagen::create([
             'nombre' => $this->nombre,
             'descripcion' => $this->descripcion,
             'ruta_archivo' => $ruta,
             'tipo' => $this->ruta_archivo->getMimeType(),
             'fecha_subida' => $this->fecha_subida,
-            'estado' => 'activo',
         ]);
 
         $this->dispatch('imagenGuardada')->to(\App\Livewire\Admin\Imagenes::class);
-        $this->crearImagen();
         session()->flash('mensaje', 'Imagen subida correctamente');
+        $this->limpiarCampos();
     }
 
     public function actualizarImagen()
@@ -69,6 +73,7 @@ class CrearOEditarImagen extends Component
         ]);
 
         $imagen = Imagen::find($this->imagen_id);
+
         if (!$imagen) {
             session()->flash('mensaje', 'La imagen a editar no existe');
             return;
@@ -80,44 +85,34 @@ class CrearOEditarImagen extends Component
         ];
 
         if ($this->ruta_archivo) {
-            if (!empty($imagen->ruta_archivo) && Storage::disk('public')->exists($imagen->ruta_archivo)) {
-                Storage::disk('public')->delete($imagen->ruta_archivo);
-            }
-
             $nuevaRuta = $this->ruta_archivo->store('imagenes', 'public');
             $data['ruta_archivo'] = $nuevaRuta;
             $data['tipo'] = $this->ruta_archivo->getMimeType();
             $this->imagen_antigua = $nuevaRuta;
+
+            if (!empty($imagen->ruta_archivo) && Storage::disk('public')->exists($imagen->ruta_archivo)) {
+                Storage::disk('public')->delete($imagen->ruta_archivo);
+            }
         }
 
         $imagen->update($data);
+
         $this->dispatch('imagenGuardada')->to(\App\Livewire\Admin\Imagenes::class);
         session()->flash('mensaje', 'Imagen actualizada correctamente');
+        $this->limpiarCampos();
     }
 
-    public function mount($id = null, $modo = 'crear')
-    {
-        $this->modo = $modo;
-
-        if ($modo === 'editar' && $id) {
-            $this->editarImagen($id);
-            return;
-        }
-
-        $this->crearImagen();
-    }
-
-    #[On('crearImagen')]
-    public function crearImagen()
+    public function limpiarCampos()
     {
         $this->modo = 'crear';
         $this->reset(['nombre', 'descripcion', 'ruta_archivo', 'fecha_subida', 'imagen_id', 'imagen_antigua']);
+        $this->resetValidation();
     }
 
-    #[On('editarImagen')]
-    public function editarImagen($id)
+    public function cargarImagenParaEditar($id)
     {
         $imagen = Imagen::find($id);
+
         if ($imagen) {
             $this->modo = 'editar';
             $this->imagen_id = $imagen->id;
@@ -128,18 +123,38 @@ class CrearOEditarImagen extends Component
             $this->ruta_archivo = null;
         }
     }
+
+    #[On('crearImagen')]
+    public function crearImagen()
+    {
+        $this->limpiarCampos();
+    }
+
+    #[On('editarImagen')]
+    public function editarImagen($id)
+    {
+        $this->cargarImagenParaEditar($id);
+    }
+
     #[On('eliminarImagen')]
     public function eliminarImagen($id)
     {
         $imagen = Imagen::find($id);
-        if ($imagen) {
-            if (!empty($imagen->ruta_archivo) && Storage::disk('public')->exists($imagen->ruta_archivo)) {
-                Storage::disk('public')->delete($imagen->ruta_archivo);
-            }
-            $imagen->delete();
-            $this->dispatch('imagenGuardada')->to(\App\Livewire\Admin\Imagenes::class);
-            session()->flash('mensaje', 'Imagen eliminada correctamente');
+
+        if (!$imagen) {
+            $this->dispatch('imagenEliminadaError');
+            return;
         }
+
+        if (!empty($imagen->ruta_archivo) && Storage::disk('public')->exists($imagen->ruta_archivo)) {
+            Storage::disk('public')->delete($imagen->ruta_archivo);
+        }
+
+        $imagen->delete();
+
+        $this->dispatch('imagenEliminada');
+        $this->dispatch('imagenGuardada')->to(\App\Livewire\Admin\Imagenes::class);
+        session()->flash('mensaje', 'Imagen eliminada correctamente');
     }
 
     public function render()

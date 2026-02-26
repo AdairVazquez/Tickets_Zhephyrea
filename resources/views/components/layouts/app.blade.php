@@ -1,7 +1,6 @@
 <x-layouts.app.sidebar :title="$title ?? null">
     <flux:main>
         {{ $slot }}
-        @livewireScripts
         @stack('scripts')
     </flux:main>
 </x-layouts.app.sidebar>

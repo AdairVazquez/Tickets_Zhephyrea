@@ -37,7 +37,7 @@
                     </div> 
                     @empty
                     <div class="inicio-carousel__slide is-active" data-carousel-slide>
-                        <img src="{{ asset('img/default-banner.jpg') }}" alt="Banner por defecto">
+                        <h2>Sin imagenes</h2>
                     </div>
                     @endforelse
                 </div>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('descripcion')->nullable();
             $table->string('ruta_archivo');
             $table->string('tipo', 50)->nullable();
+            $table->enum('estado', ['activo', 'inactivo'])->default('inactivo');
             $table->timestamp('fecha_subida');
             $table->timestamps();
         });

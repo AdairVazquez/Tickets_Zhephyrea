@@ -61,6 +61,113 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+/* ====================================================================================================
+   INICIO - CARRUSEL
+   ==================================================================================================== */
+
+.inicio-carousel {
+    position: relative;
+    width: 100%;
+    border: 1px solid var(--color-zinc-200);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--color-zinc-100);
+}
+
+.dark .inicio-carousel {
+    border-color: var(--color-zinc-700);
+    background: var(--color-zinc-900);
+}
+
+.inicio-carousel__track {
+    position: relative;
+    min-height: 400px;
+}
+
+.inicio-carousel__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+    pointer-events: none;
+}
+
+.inicio-carousel__slide.is-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.inicio-carousel__slide img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+.inicio-carousel__control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 9999px;
+    border: none;
+    background: rgb(0 0 0 / 45%);
+    color: #fff;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inicio-carousel__control:hover {
+    background: rgb(0 0 0 / 60%);
+}
+
+.inicio-carousel__control.prev {
+    left: 12px;
+}
+
+.inicio-carousel__control.next {
+    right: 12px;
+}
+
+.inicio-carousel__indicators {
+    position: absolute;
+    left: 50%;
+    bottom: 14px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.inicio-carousel__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    border: none;
+    background: rgb(255 255 255 / 45%);
+    cursor: pointer;
+}
+
+.inicio-carousel__dot.is-active {
+    background: #fff;
+}
+
+@media (max-width: 768px) {
+    .inicio-carousel__track {
+        min-height: 240px;
+    }
+
+    .inicio-carousel__slide img {
+        height: 240px;
+    }
+}
+
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */

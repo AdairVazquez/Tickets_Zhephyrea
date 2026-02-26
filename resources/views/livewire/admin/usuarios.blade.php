@@ -12,10 +12,10 @@
                 </div>
 
                 <div class="overflow-x-auto rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+                    <div class="mt-4">
+                        {{ $usuarios->links() }}
+                    </div>
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <div class="mt-4">
-                            {{ $usuarios->links() }}
-                        </div>
                         <thead class="bg-gray-50 dark:bg-gray-800">
                             <tr>
                                 <th
@@ -262,7 +262,6 @@
 
 
 
-    @livewireScripts
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>

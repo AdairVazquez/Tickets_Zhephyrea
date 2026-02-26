@@ -13,5 +13,6 @@ class Imagen extends Model
         'ruta_archivo',
         'tipo',
         'fecha_subida',
+        'estado',
     ];
 }

@@ -34,7 +34,7 @@
                     @forelse($imagenes as $imagen)
                     <div class="inicio-carousel__slide {{ $loop->first ? 'is-active' : '' }}" data-carousel-slide>
                         <img src="{{ asset('storage/'.$imagen->ruta_archivo) }}" alt="Banner {{ $loop->iteration }}">
-                    </div>
+                    </div> 
                     @empty
                     <div class="inicio-carousel__slide is-active" data-carousel-slide>
                         <img src="{{ asset('img/default-banner.jpg') }}" alt="Banner por defecto">

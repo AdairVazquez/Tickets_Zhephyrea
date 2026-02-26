@@ -41,7 +41,7 @@ class CrearOEditarImagen extends Component
 
         $this->fecha_subida = now();
         $ruta = $this->ruta_archivo->store('imagenes', 'public');
-
+ 
         Imagen::create([
             'nombre' => $this->nombre,
             'descripcion' => $this->descripcion,
@@ -139,7 +139,7 @@ class CrearOEditarImagen extends Component
             $imagen->delete();
             $this->dispatch('imagenGuardada')->to(\App\Livewire\Admin\Imagenes::class);
             session()->flash('mensaje', 'Imagen eliminada correctamente');
-        } 
+        }
     }
 
     public function render()

@@ -22,7 +22,7 @@ Route::get('/send-test-mail', function () {
 
         Mail::send('email.nuevoTicket', $data ,function($message) {
             $message->to('chrisaban08@gmail.com')
-                    ->subject('Prueba de Diseño Zephyrea');
+                    ->subject('Nuevo Ticket Registrado');
         });
         return "Correo enviado con éxito. Revisa tu bandeja de entrada.";
     } catch (\Exception $e) {

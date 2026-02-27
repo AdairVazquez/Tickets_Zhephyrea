@@ -16,6 +16,7 @@ class Chat extends Component
         $this->nombre_usuario = Auth::user()->name;
         $nombre_rol = User::find($this->id_usuario);
         $this->rol = $nombre_rol->rol->nombre_rol;
+        $this->ticketId = request()->query('ticketId');
     }
 
     public function render()

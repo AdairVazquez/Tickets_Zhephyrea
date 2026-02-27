@@ -16,6 +16,8 @@ Route::get('/preview-mail', function () {
 });
 
 
+
+
 Route::get('/send-test-mail', function () {
     $data = [];
     try {

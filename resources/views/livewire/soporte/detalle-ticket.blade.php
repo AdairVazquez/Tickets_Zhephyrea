@@ -84,12 +84,13 @@
                                         <button wire:click="confirmCerrar({{ $ticket->id }})"
                                             class="mt-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Cerrar
                                             Ticket</button>
-                                        <button class="px-4 ml-3 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
-                                                wire:click="irChat({{ $ticket->id }})">Ir al chat
-                                            </button>
+                                        <button
+                                            class="px-4 ml-3 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+                                            wire:click="irChat({{ $ticket->id }})">Ir al chat
+                                        </button>
                                     @endif
 
-                                    
+
                                     <button wire:click="regresar"
                                         class="mt-1 ml-3 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Regresar</button>
                                 @endif
@@ -103,33 +104,35 @@
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            Livewire.on('show-cerrar-confirmation', () => {
-                Swal.fire({
-                    title: "¿Estás seguro?",
-                    text: "Esta acción no se puede revertir",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Cerrar Ticket"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        console.log('hola');
-                        Livewire.dispatch('cerrarTicket');
-                    }
-                });
-            });
+            document.addEventListener('livewire:init', () => {
+                        Livewire.on('show-cerrar-confirmation', () => {
+                            Swal.fire({
+                                title: "¿Estás seguro?",
+                                text: "Esta acción no se puede revertir",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Cerrar Ticket"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    console.log('hola');
+                                    Livewire.dispatch('cerrarTicket');
+                                }
+                            });
+                        });
 
-            Livewire.on('ticketCerrado', () => {
-                Swal.fire({
-                    toast: true, // Activar estilo toast
-                    position: 'top-end', // Arriba derecha
-                    icon: 'error', // Icono de éxito
-                    title: 'Ticket Cerrado', // Texto
-                    showConfirmButton: false, // Sin botón de OK
-                    timer: 3000, // Duración 3 segundos
-                    timerProgressBar: true // Barra de progreso
-                });
+                        Livewire.on('ticketCerrado', () => {
+                            Swal.fire({
+                                toast: true, // Activar estilo toast
+                                position: 'top-end', // Arriba derecha
+                                icon: 'error', // Icono de éxito
+                                title: 'Ticket Cerrado', // Texto
+                                showConfirmButton: false, // Sin botón de OK
+                                timer: 3000, // Duración 3 segundos
+                                timerProgressBar: true // Barra de progreso
+                            });
+                        });
             });
         </script>
     </div>

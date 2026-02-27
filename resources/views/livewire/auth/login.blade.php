@@ -52,6 +52,10 @@ new #[Layout('components.layouts.auth')] class extends Component {
         //validacion para el redireccionamiento al dashboard dependiendo del rol
         if ($user->rol_id == 1) {//admin
             $this->redirectIntended(default: route('admin.dashboard', absolute: false), navigate: true);
+        }elseif ($user->rol_id == 2) {
+            $this->redirectIntended(default: route('soporte.dashboard', absolute: false), navigate: true);
+        }elseif ($user->rol_id == 3) {
+            $this->redirectIntended(default: route('cliente.dashboard', absolute: false), navigate: true);
         }
     }
 

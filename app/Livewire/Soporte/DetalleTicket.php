@@ -3,7 +3,9 @@
 namespace App\Livewire\Soporte;
 
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
@@ -36,6 +38,14 @@ class DetalleTicket extends Component
             'id_estado' => 3,
             ]);
         }
+
+        $destinatario = $ticket->creador->email;
+        $data = ['titulo' => $ticket->titulo, 'nombre' => $ticket->asignado->name];
+
+        Mail::send('email.ticketCerrado', $data, function ($message) use ($destinatario){
+            $message->to($destinatario)
+                ->subject('Conclusión del ticket');
+        });
 
         $this->dispatch('ticketCerrado');
     }

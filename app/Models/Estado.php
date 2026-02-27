@@ -14,4 +14,8 @@ class Estado extends Model
     protected $fillable = [
         'nombre_estado'
     ];
+
+    public function imagen(){
+        return $this->hasMany(Imagen::class);
+    }
 }

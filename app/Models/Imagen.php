@@ -13,6 +13,11 @@ class Imagen extends Model
         'ruta_archivo',
         'tipo',
         'fecha_subida',
-        'estado',
+        'estado_id',
     ];
+
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class);
+    }
 }

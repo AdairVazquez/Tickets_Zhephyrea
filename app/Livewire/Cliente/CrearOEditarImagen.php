@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cliente;
 
+use App\Models\Estado;
 use App\Models\Imagen;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
@@ -15,6 +16,8 @@ class CrearOEditarImagen extends Component
     public $nombre, $descripcion, $ruta_archivo, $fecha_subida;
     public $imagen_antigua, $imagen_id;
     public $modo = 'crear';
+    public $estados = [];
+    public $estado_id;
 
     public function mount()
     {
@@ -36,12 +39,15 @@ class CrearOEditarImagen extends Component
         $this->validate([
             'nombre' => 'required',
             'ruta_archivo' => 'required|file|mimes:jpg,jpeg,png,gif,svg|max:2048',
+            'estado_id' => 'required|exists:estados,id'
         ], [
             'nombre.required' => 'Campo obligatorio, escribe un nombre',
             'ruta_archivo.required' => 'Debes subir un archivo',
             'ruta_archivo.file' => 'El campo debe ser un archivo valido',
             'ruta_archivo.mimes' => 'Solo se permiten archivos de imagen (jpg, jpeg, png, gif, svg)',
             'ruta_archivo.max' => 'El archivo no debe superar los 2MB',
+            'estado_id.required' => 'Es obligatorio el estado',
+            'estado_id.exists' => 'Elige un estado existente',
         ]);
 
         $this->fecha_subida = now();
@@ -53,6 +59,7 @@ class CrearOEditarImagen extends Component
             'ruta_archivo' => $ruta,
             'tipo' => $this->ruta_archivo->getMimeType(),
             'fecha_subida' => $this->fecha_subida,
+            'estado_id' => $this->estado_id,
         ]);
 
         $this->dispatch('imagenGuardada')->to(\App\Livewire\Admin\Imagenes::class);
@@ -65,11 +72,14 @@ class CrearOEditarImagen extends Component
         $this->validate([
             'nombre' => 'required',
             'ruta_archivo' => 'nullable|file|mimes:jpg,jpeg,png,gif,svg|max:2048',
+            'estado_id' => 'required|exists:estados,id'
         ], [
             'nombre.required' => 'Campo obligatorio, escribe un nombre',
             'ruta_archivo.file' => 'El campo debe ser un archivo valido',
             'ruta_archivo.mimes' => 'Solo se permiten archivos de imagen (jpg, jpeg, png, gif, svg)',
             'ruta_archivo.max' => 'El archivo no debe superar los 2MB',
+            'estado_id.required' => 'Es obligatorio el estado',
+            'estado_id.exists' => 'Elige un estado existente',
         ]);
 
         $imagen = Imagen::find($this->imagen_id);
@@ -82,6 +92,7 @@ class CrearOEditarImagen extends Component
         $data = [
             'nombre' => $this->nombre,
             'descripcion' => $this->descripcion,
+            'estado_id' => $this->estado_id,
         ];
 
         if ($this->ruta_archivo) {
@@ -105,7 +116,8 @@ class CrearOEditarImagen extends Component
     public function limpiarCampos()
     {
         $this->modo = 'crear';
-        $this->reset(['nombre', 'descripcion', 'ruta_archivo', 'fecha_subida', 'imagen_id', 'imagen_antigua']);
+        $this->estados = Estado::whereIn('id', [1, 3])->get();
+        $this->reset(['nombre', 'descripcion', 'ruta_archivo', 'fecha_subida', 'imagen_id', 'imagen_antigua', 'estado_id']);
         $this->resetValidation();
     }
 
@@ -121,6 +133,7 @@ class CrearOEditarImagen extends Component
             $this->fecha_subida = $imagen->fecha_subida;
             $this->imagen_antigua = $imagen->ruta_archivo;
             $this->ruta_archivo = null;
+            $this->estado_id = $imagen->estado_id;
         }
     }
 
@@ -133,6 +146,7 @@ class CrearOEditarImagen extends Component
     #[On('editarImagen')]
     public function editarImagen($id)
     {
+        $this->estados = Estado::whereIn('id', [1, 3])->get();
         $this->cargarImagenParaEditar($id);
     }
 

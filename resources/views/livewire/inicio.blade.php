@@ -72,7 +72,7 @@
 
         function initInicioCarousel() {
             const carousel = document.getElementById('carouselPersonalizado');
-            if (!carousel || carousel.dataset.initialized === 'true') {
+            if (!carousel) {
                 return;
             }
 
@@ -82,8 +82,12 @@
             const nextBtn = carousel.querySelector('[data-carousel-next]');
             const intervalMs = Number(carousel.dataset.interval) || 5000;
 
+            if (carousel._autoSlideTimer) {
+                clearInterval(carousel._autoSlideTimer);
+                carousel._autoSlideTimer = null;
+            }
+
             if (slides.length <= 1) {
-                carousel.dataset.initialized = 'true';
                 return;
             }
 
@@ -104,37 +108,41 @@
             const startAutoSlide = () => {
                 stopAutoSlide();
                 timer = setInterval(() => showSlide(currentIndex + 1), intervalMs);
+                carousel._autoSlideTimer = timer;
             };
 
             const stopAutoSlide = () => {
                 if (timer) {
                     clearInterval(timer);
                     timer = null;
+                    carousel._autoSlideTimer = null;
                 }
             };
 
-            prevBtn?.addEventListener('click', () => {
-                showSlide(currentIndex - 1);
-                startAutoSlide();
-            });
-
-            nextBtn?.addEventListener('click', () => {
-                showSlide(currentIndex + 1);
-                startAutoSlide();
-            });
-
-            dots.forEach((dot, index) => {
-                dot.addEventListener('click', () => {
-                    showSlide(index);
+            if (carousel.dataset.boundEvents !== 'true') {
+                prevBtn?.addEventListener('click', () => {
+                    showSlide(currentIndex - 1);
                     startAutoSlide();
                 });
-            });
 
-            carousel.addEventListener('mouseenter', stopAutoSlide);
-            carousel.addEventListener('mouseleave', startAutoSlide);
+                nextBtn?.addEventListener('click', () => {
+                    showSlide(currentIndex + 1);
+                    startAutoSlide();
+                });
+
+                dots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => {
+                        showSlide(index);
+                        startAutoSlide();
+                    });
+                });
+
+                carousel.addEventListener('mouseenter', stopAutoSlide);
+                carousel.addEventListener('mouseleave', startAutoSlide);
+                carousel.dataset.boundEvents = 'true';
+            }
 
             startAutoSlide();
-            carousel.dataset.initialized = 'true';
         }
     </script>
     @endpush

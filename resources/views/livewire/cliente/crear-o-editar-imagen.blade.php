@@ -13,7 +13,7 @@
                     <input type="text" id="nombre" wire:model="nombre"
                         class="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-zinc-800 dark:text-white transition-all">
                     @error('nombre')
-                        <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span>
+                    <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span>
                     @enderror
                 </div>
 
@@ -22,15 +22,31 @@
                     <textarea id="descripcion" wire:model="descripcion" rows="2"
                         class="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-zinc-800 dark:text-white transition-all"></textarea>
                     @error('descripcion')
-                        <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span>
+                    <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span>
                     @enderror
                 </div>
+                <div>
 
-                <div x-data="{ isUploading: false }" 
-                     x-on:livewire-upload-start="isUploading = true" 
-                     x-on:livewire-upload-finish="isUploading = false" 
-                     x-on:livewire-upload-error="isUploading = false">
-                    
+                            
+                    <label for="descripcion" class="block text-sm font-semibold text-gray-700 dark:text-zinc-300">Seleccione un estado</label>
+                    <select wire:model="estado_id"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100">
+                        <option value="">Seleccione un estado</option>
+                        @foreach($estados as $estado)
+                        <option value="{{ $estado->id }}">
+                            {{ $estado->nombre_estado }}
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('descripcion')
+                    <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div x-data="{ isUploading: false }"
+                    x-on:livewire-upload-start="isUploading = true"
+                    x-on:livewire-upload-finish="isUploading = false"
+                    x-on:livewire-upload-error="isUploading = false">
+
                     <label class="block text-sm font-semibold text-gray-700 dark:text-zinc-300">Archivo de Imagen</label>
                     <input type="file" id="ruta_archivo" wire:model="ruta_archivo"
                         class="mt-1 block w-full text-sm text-gray-500 dark:text-zinc-400
@@ -41,7 +57,7 @@
                         hover:file:bg-blue-100 dark:file:bg-zinc-800 dark:file:text-zinc-300">
 
                     @error('ruta_archivo')
-                        <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span>
+                    <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span>
                     @enderror
 
                     <div class="mt-4 border-2 border-dashed border-gray-200 dark:border-zinc-800 rounded-lg p-2 min-h-[150px] flex items-center justify-center relative">
@@ -56,20 +72,20 @@
                         </div>
 
                         @if ($ruta_archivo)
-                            <div class="text-center">
-                                <img src="{{ $ruta_archivo->temporaryUrl() }}" class="max-h-48 rounded-lg shadow-md mx-auto">
-                                <p class="text-[10px] text-green-600 mt-2 font-bold uppercase">Nueva imagen lista</p>
-                            </div>
+                        <div class="text-center">
+                            <img src="{{ $ruta_archivo->temporaryUrl() }}" class="max-h-48 rounded-lg shadow-md mx-auto">
+                            <p class="text-[10px] text-green-600 mt-2 font-bold uppercase">Nueva imagen lista</p>
+                        </div>
                         @elseif ($imagen_antigua)
-                            <div class="text-center">
-                                <img src="{{ asset('storage/' . $imagen_antigua) }}" class="max-h-48 rounded-lg shadow-md mx-auto">
-                                <p class="text-[10px] text-gray-500 mt-2 font-bold uppercase italic">Imagen almacenada</p>
-                            </div>
+                        <div class="text-center">
+                            <img src="{{ asset('storage/' . $imagen_antigua) }}" class="max-h-48 rounded-lg shadow-md mx-auto">
+                            <p class="text-[10px] text-gray-500 mt-2 font-bold uppercase italic">Imagen almacenada</p>
+                        </div>
                         @else
-                            <div class="text-gray-400 text-sm flex flex-col items-center">
-                                <flux:icon name="photo" variant="outline" class="w-10 h-10 mb-2 opacity-20" />
-                                <span>Sin archivo seleccionado</span>
-                            </div>
+                        <div class="text-gray-400 text-sm flex flex-col items-center">
+                            <flux:icon name="photo" variant="outline" class="w-10 h-10 mb-2 opacity-20" />
+                            <span>Sin archivo seleccionado</span>
+                        </div>
                         @endif
                     </div>
                 </div>

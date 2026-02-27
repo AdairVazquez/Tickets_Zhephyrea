@@ -146,16 +146,21 @@ select:focus[data-flux-control] {
 }
 
 .inicio-carousel__dot {
-    width: 10px;
-    height: 10px;
+    --dot-progress: 0;
+    width: 12px;
+    height: 12px;
     border-radius: 9999px;
-    border: none;
-    background: rgb(255 255 255 / 45%);
+    border: 1px solid rgb(255 255 255 / 55%);
+    background: conic-gradient(
+        #fff calc(var(--dot-progress) * 1turn),
+        rgb(156 163 175 / 90%) 0
+    );
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 20%);
     cursor: pointer;
 }
 
 .inicio-carousel__dot.is-active {
-    background: #fff;
+    border-color: #fff;
 }
 
 @media (max-width: 768px) {

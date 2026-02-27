@@ -72,7 +72,7 @@
 
         function initInicioCarousel() {
             const carousel = document.getElementById('carouselPersonalizado');
-            if (!carousel) {
+            if (!carousel || carousel.dataset.initialized === 'true') {
                 return;
             }
 
@@ -82,18 +82,22 @@
             const nextBtn = carousel.querySelector('[data-carousel-next]');
             const intervalMs = Number(carousel.dataset.interval) || 5000;
 
-            if (carousel._autoSlideTimer) {
-                clearInterval(carousel._autoSlideTimer);
-                carousel._autoSlideTimer = null;
-            }
-
             if (slides.length <= 1) {
+                carousel.dataset.initialized = 'true';
                 return;
             }
 
             let currentIndex = slides.findIndex((slide) => slide.classList.contains('is-active'));
             currentIndex = currentIndex >= 0 ? currentIndex : 0;
-            let timer = null;
+            let autoTimer = null;
+            let progressFrame = null;
+            let elapsedMs = 0;
+
+            const setDotProgress = (index, progress = 0) => {
+                dots.forEach((dot, i) => {
+                    dot.style.setProperty('--dot-progress', i === index ? String(progress) : '0');
+                });
+            };
 
             const showSlide = (index) => {
                 slides[currentIndex]?.classList.remove('is-active');
@@ -103,46 +107,78 @@
 
                 slides[currentIndex]?.classList.add('is-active');
                 dots[currentIndex]?.classList.add('is-active');
+                elapsedMs = 0;
+                setDotProgress(currentIndex, 0);
             };
 
-            const startAutoSlide = () => {
-                stopAutoSlide();
-                timer = setInterval(() => showSlide(currentIndex + 1), intervalMs);
-                carousel._autoSlideTimer = timer;
-            };
-
-            const stopAutoSlide = () => {
-                if (timer) {
-                    clearInterval(timer);
-                    timer = null;
-                    carousel._autoSlideTimer = null;
+            const stopProgress = () => {
+                if (progressFrame) {
+                    cancelAnimationFrame(progressFrame);
+                    progressFrame = null;
                 }
             };
 
-            if (carousel.dataset.boundEvents !== 'true') {
-                prevBtn?.addEventListener('click', () => {
-                    showSlide(currentIndex - 1);
-                    startAutoSlide();
-                });
+            const startProgress = (resume = false) => {
+                stopProgress();
 
-                nextBtn?.addEventListener('click', () => {
+                const startTime = performance.now() - (resume ? elapsedMs : 0);
+                const tick = (now) => {
+                    elapsedMs = Math.max(0, now - startTime);
+                    const progress = Math.min(elapsedMs / intervalMs, 1);
+                    setDotProgress(currentIndex, progress);
+
+                    if (progress < 1) {
+                        progressFrame = requestAnimationFrame(tick);
+                    }
+                };
+
+                progressFrame = requestAnimationFrame(tick);
+            };
+
+            const stopAutoSlide = () => {
+                if (autoTimer) {
+                    clearTimeout(autoTimer);
+                    autoTimer = null;
+                }
+
+                stopProgress();
+            };
+
+            const startAutoSlide = (resume = false) => {
+                stopAutoSlide();
+
+                const remainingMs = resume ? Math.max(intervalMs - elapsedMs, 50) : intervalMs;
+                startProgress(resume);
+
+                autoTimer = setTimeout(() => {
                     showSlide(currentIndex + 1);
-                    startAutoSlide();
+                    startAutoSlide(false);
+                }, remainingMs);
+            };
+
+            prevBtn?.addEventListener('click', () => {
+                showSlide(currentIndex - 1);
+                startAutoSlide(false);
+            });
+
+            nextBtn?.addEventListener('click', () => {
+                showSlide(currentIndex + 1);
+                startAutoSlide(false);
+            });
+
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    showSlide(index);
+                    startAutoSlide(false);
                 });
+            });
 
-                dots.forEach((dot, index) => {
-                    dot.addEventListener('click', () => {
-                        showSlide(index);
-                        startAutoSlide();
-                    });
-                });
+            carousel.addEventListener('mouseenter', stopAutoSlide);
+            carousel.addEventListener('mouseleave', () => startAutoSlide(true));
 
-                carousel.addEventListener('mouseenter', stopAutoSlide);
-                carousel.addEventListener('mouseleave', startAutoSlide);
-                carousel.dataset.boundEvents = 'true';
-            }
-
-            startAutoSlide();
+            setDotProgress(currentIndex, 0);
+            startAutoSlide(false);
+            carousel.dataset.initialized = 'true';
         }
     </script>
     @endpush

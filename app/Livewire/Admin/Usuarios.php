@@ -7,6 +7,7 @@ use App\Models\Rol;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Mail;
 
 use function Termwind\render;
 
@@ -79,6 +80,19 @@ class Usuarios extends Component
             $nueva = Empresa::create(['nombre_empresa' => $this->nueva_empresa]);
             $final_empresa_id = $nueva->id;
         }
+
+        $data = [
+            'nombre' => $this->name,
+            'correo' => $this->email,
+            'contraseña' => $this->password
+        ];
+
+        $destinatario = $this->email;
+
+        Mail::send('email.usuarioRegistrado', $data, function ($message) use ($destinatario){
+            $message->to($destinatario)
+                ->subject('Tus credenciales para Tickets Zephyrea');
+        });
 
         User::create([
             'name'       => $this->name,

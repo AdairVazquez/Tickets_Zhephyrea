@@ -10,9 +10,9 @@ use Livewire\Volt\Volt;
 
 Route::get('/preview-mail', function () {
     // Simulamos un ticket para la prueb
-
+    $data = ['nombre' => 'adair', 'correo' => 'asd@gmail.com' , 'contraseña' => '123'];
     // Retornamos la vista del correo pasando los datos
-    return view('email.nuevoTicket');
+    return view('email.usuarioRegistrado', $data);
 });
 
 

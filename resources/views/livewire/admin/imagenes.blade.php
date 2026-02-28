@@ -47,7 +47,7 @@
                                         class="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400">
                                         <flux:icon name="trash" variant="outline" class="w-5 h-5" />
                                     </button>
-                                </td>
+                                </td> 
                             </tr>
                             @empty
                             <tr>
